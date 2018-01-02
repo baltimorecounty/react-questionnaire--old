@@ -1,0 +1,17 @@
+.message--question {
+	background: white;
+	margin-bottom: 0;
+}
+.message--question .text {
+	padding-left: 0;
+}
+.message--question.form {
+	text-align: left;
+}
+.message--question.form .form-field {
+	display: inline-block;
+	margin-right: 15px;
+}
+.message--question.form input {
+	margin-right: 5px;
+}
