@@ -9,7 +9,6 @@ function Question(message, props) {
 			&& message.fieldType === 'radio' && optionKeys.length > 0;
 		const hasErrors = props.validationErrors.length > 0;
 		
-		
         if (isRadioInput) {
             return (
                 <div>
@@ -35,11 +34,10 @@ function Question(message, props) {
 		else if (message.fieldType === 'text') {
 			return (
 				<div>
+					<QuestionMessage message={message} />
 					{!message.isAnswered && message.fieldType === 'text' &&
                         <div className="message--question form">
 							<div key={message.key} className="form-field">
-								<label 
-									htmlFor={message.key}>{message.key}</label>
 								<input 
 									type='text' 	 
 									id={message.key}
@@ -55,7 +53,7 @@ function Question(message, props) {
 			)
 		}
 
-        return <Answer message={message} />;
+		return <Answer message={message} />;
 }
 
 class QuestionComponent extends Component {
