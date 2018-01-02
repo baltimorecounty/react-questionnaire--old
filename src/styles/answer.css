@@ -1,0 +1,7 @@
+.answer {
+	border-bottom: 1px solid lightgray;
+	padding-bottom: 10px;
+}
+.answer--no-options {
+	border: none;
+}

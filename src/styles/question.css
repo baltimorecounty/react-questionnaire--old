@@ -15,3 +15,15 @@
 .message--question.form input {
 	margin-right: 5px;
 }
+.message--question.form label {
+	font-weight: 100;
+}
+.message--question.form .text-input-label {
+	display: block;
+	margin-bottom: 10px;
+}
+
+.message--question.form .btn {
+	display: block;
+	margin: 10px 0;
+}
