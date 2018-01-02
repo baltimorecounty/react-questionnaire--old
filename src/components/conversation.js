@@ -202,7 +202,12 @@ class ConversationComponent extends Component {
 			});
 		}	
 		return validationErrors;
-    };
+	};
+	
+	handleFormSubmit = (e) => {
+		console.log(e);
+
+	};
 	
 	handleTextInputChange = (questionKey, validationTypes, changeEvent) => {
 		const answers = this.state.answers;
@@ -242,6 +247,7 @@ class ConversationComponent extends Component {
 										validationErrors={this.state.validationErrors}
 										message={message}
 										onButtonSelect={this.handleButtonSelect}
+										onQuestionSubmit={this.handleFormSubmit}
 										onHandleTextInputChange={this.handleTextInputChange} />
 						})}
                     </section>
