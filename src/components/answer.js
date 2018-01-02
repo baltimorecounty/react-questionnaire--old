@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import '../styles/answer.css';
 
-class AnswerComponent extends Component {
+class RadioInput extends Component {
     render() {
+		const { message, handlers } = this.props;
+
         return (
 			<p 
 				className="answer" 
@@ -11,4 +13,4 @@ class AnswerComponent extends Component {
     }
 }
 
-export default AnswerComponent;
+export default RadioInput;

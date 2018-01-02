@@ -3,7 +3,7 @@ import '../styles/conversation.css';
 import Question from '../components/question';
 import Validator from '../core/ci-validation';
 
-var generateTemplateString = (function(){
+const generateTemplateString = (function(){
     var cache = {};
     function generateTemplate(template){
     var fn = cache[template];
@@ -22,15 +22,19 @@ var generateTemplateString = (function(){
 return generateTemplate;
 })();
 
-class ConversationComponent extends Component {
+class QuestionnaireComponent extends Component {
     constructor(props) {
         super(props);
         
         this.state = this.getInitialState();
         this.state.messages = this.props.messages;
+	};
+
+	componentWillMount() {
+        this.startQuestionnaire();
     };
 
-    getInitialState = () => {
+	getInitialState = () => {
         return {
             activeMessage: {},
 			answers: {},
@@ -39,34 +43,6 @@ class ConversationComponent extends Component {
 			isLoading: false,
 			messages: this.props.messages
         };
-    };
-    
-    moveConversation = () => {
-        var objDiv = document.getElementById("conversation");
-        objDiv.scrollTop = objDiv.scrollHeight;
-    };
-
-    parseTemplate = (messageText, data) => {
-        let template = generateTemplateString(messageText);
-        return template(data);
-    };
-
-    restartChat = () => {
-        var initialState = this.getInitialState();
-        this.setState(initialState, () => {
-            this.startChat();
-        });
-	};
-	
-	getMessageById = (id) => {
-		if (!id) {
-			return this.state.messages[0];
-		}
-		return this.state.messages.filter(message => message.id === id)[0];
-	};
-
-    startChat() {
-        this.getNextMessage();
 	};
 	
 	addToLog = (item) => {
@@ -81,44 +57,57 @@ class ConversationComponent extends Component {
 		return this.state.log.filter(item => Object.hasOwnProperty.call(item, 'id') ? item.id === id : false)[0];
 	};
 
-	setLogQuestionToAnswered = (id) => {
-		const messageLog = this.state.log;
-		let logItemToUpdateIndex;
-		let logItemToUpdate;
-
-		for (let i = 0, len = messageLog.length; i < len; i++) {
-			const logItem = Object.assign({}, messageLog[i]);
-			const idExists = Object.hasOwnProperty.call(logItem, 'id');
-			const idMatches = logItem.id === id;
-
-			if (idExists && idMatches) {
-				logItemToUpdate = logItem;
-				logItemToUpdateIndex = i;
-				break;
-			}
+	getMessageById = (id) => {
+		if (!id) {
+			return this.state.messages[0];
 		}
-
-		logItemToUpdate.isAnswered = true;
-		messageLog[logItemToUpdateIndex] = logItemToUpdate;
-
-		this.setState({
-			log: messageLog
-		});
+		return this.state.messages.filter(message => message.id === id)[0];
 	};
 
-	setAnswer = (key, answer) => {
-		let answers = this.state.answers;
-		answers[key] = answer;
+	getNextMessage = (nextStep, callback) => {
+		// Get the next message
+		const nextMessage = this.getMessageById(nextStep);
 
-		this.setState({
-			answers: answers
-		})
-	}
+		// Allow for users to use answer data in their quetions and answers
+		nextMessage.text = this.parseTemplate(nextMessage.text, this.state.answers);
 
-    //This syntax is required to associate this method to the Conversation Component
-    //Otherwise the MessageComponent will be the scope and the Conversation state won't be available
-    //See https://babeljs.io/blog/2015/06/07/react-on-es6-plus
-    handleButtonSelect = (questionId, answerValue, answerInfo) => {
+		// Push the question to the log
+		this.addToLog(nextMessage);
+	};
+
+	getValidationErrors = (validationTypes, input, key) => {
+        let validationErrors = [];
+        const validator = new Validator();
+
+        for (let validationType of validationTypes) {
+            var validationObj = validator.Rules[validationType];
+
+            if (!validationObj.test(input)) {
+                validationErrors.push({
+                    type: validationType,
+                    input: input,
+                    message: validationObj.message
+                })
+            }
+		}
+
+		var newErrors = this.state.validationErrors;
+		newErrors = newErrors.concat(validationErrors);
+
+		if (validationErrors.length) {
+			this.setState({
+				validationErrors: newErrors
+			})
+		}
+		else {
+			this.setState({
+				validationErrors: []
+			});
+		}	
+		return validationErrors;
+	};
+
+	handleButtonSelect = (questionId, answerValue, answerInfo) => {
 		let activeQuestion = this.getMessageById(questionId);
 
 		if (!answerInfo) {
@@ -161,49 +150,6 @@ class ConversationComponent extends Component {
 		this.getNextMessage(answerInfo.nextStep);
 	};
 
-    getNextMessage = (nextStep, callback) => {
-		// Get the next message
-		const nextMessage = this.getMessageById(nextStep);
-
-		// Allow for users to use answer data in their quetions and answers
-		nextMessage.text = this.parseTemplate(nextMessage.text, this.state.answers);
-
-		// Push the question to the log
-		this.addToLog(nextMessage);
-	};
-
-	getValidationErrors = (validationTypes, input, key) => {
-        let validationErrors = [];
-        const validator = new Validator();
-
-        for (let validationType of validationTypes) {
-            var validationObj = validator.Rules[validationType];
-
-            if (!validationObj.test(input)) {
-                validationErrors.push({
-                    type: validationType,
-                    input: input,
-                    message: validationObj.message
-                })
-            }
-		}
-
-		var newErrors = this.state.validationErrors;
-		newErrors = newErrors.concat(validationErrors);
-
-		if (validationErrors.length) {
-			this.setState({
-				validationErrors: newErrors
-			})
-		}
-		else {
-			this.setState({
-				validationErrors: []
-			});
-		}	
-		return validationErrors;
-	};
-	
 	handleFormSubmit = (e) => {
 		console.log(e);
 
@@ -226,16 +172,62 @@ class ConversationComponent extends Component {
 		});
 	};
 
-    componentWillMount() {
-        this.startChat();
+    parseTemplate = (messageText, data) => {
+        let template = generateTemplateString(messageText);
+        return template(data);
     };
 
+    restartQuestionnaire = () => {
+        var initialState = this.getInitialState();
+        this.setState(initialState, () => {
+            this.startQuestionnaire();
+        });
+	};
+
+	setAnswer = (key, answer) => {
+		let answers = this.state.answers;
+		answers[key] = answer;
+
+		this.setState({
+			answers: answers
+		})
+	}
+
+	setLogQuestionToAnswered = (id) => {
+		const messageLog = this.state.log;
+		let logItemToUpdateIndex;
+		let logItemToUpdate;
+
+		for (let i = 0, len = messageLog.length; i < len; i++) {
+			const logItem = Object.assign({}, messageLog[i]);
+			const idExists = Object.hasOwnProperty.call(logItem, 'id');
+			const idMatches = logItem.id === id;
+
+			if (idExists && idMatches) {
+				logItemToUpdate = logItem;
+				logItemToUpdateIndex = i;
+				break;
+			}
+		}
+
+		logItemToUpdate.isAnswered = true;
+		messageLog[logItemToUpdateIndex] = logItemToUpdate;
+
+		this.setState({
+			log: messageLog
+		});
+	};
+	
+    startQuestionnaire() {
+        this.getNextMessage();
+	};
+	
     render() {
         const { userInput, disableUserInput } = this.state;
 
         return (
             <div className="container conversation-container">
-                <button onClick={this.restartChat}>Restart Chat</button>
+                <button onClick={this.restartQuestionnaire}>Restart Chat</button>
                 <section id="conversation" className="conversation">
                     <section className="conversation-body">
                         {this.state.isLoading &&
@@ -257,4 +249,4 @@ class ConversationComponent extends Component {
     }
 }
 
-export default ConversationComponent;
+export default QuestionnaireComponent;

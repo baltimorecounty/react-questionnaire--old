@@ -2,31 +2,23 @@ import React, { Component } from 'react';
 import '../styles/message.css';
 import QuestionMessage from './question-message';
 import Answer from '../components/answer';
+import RadioInput from '../components/answers-radio-inputs';
+import TextInput from '../components/answer-text-input';
 
 function Question(message, props) {
 		const optionKeys = message.options ? Object.keys(message.options) : [];
 		const isRadioInput = message && message.hasOwnProperty('fieldType') 
 			&& message.fieldType === 'radio' && optionKeys.length > 0;
-		const hasErrors = props.validationErrors.length > 0;
 		
         if (isRadioInput) {
             return (
                 <div>
                     <QuestionMessage message={message} />
                     {!message.isAnswered && message.fieldType === 'radio' &&
-                        <div className="message--question form">
-							{optionKeys.map((key, index) =>
-								<div key={key} className="form-field">
-									<input 
-										type='radio' 
-										onClick={() => props.onButtonSelect(message.id, key, message.options[key])} 
-										id={message.options[key].text} 
-										value={message.options[key].text} />
-									<label 
-										htmlFor={message.options[key].text}>{message.options[key].text}</label>
-								</div>
-                            )}
-                        </div>
+						<RadioInput 
+							message={message}
+							optionKeys={optionKeys} 
+							handlers={props} />
 					}
                 </div>
             )
@@ -36,21 +28,10 @@ function Question(message, props) {
 				<div>
 					<QuestionMessage message={message} />
 					{!message.isAnswered && message.fieldType === 'text' &&
-                        <div className="message--question form">
-							<div key={message.key} className="form-field">
-								<form onSubmit={(e) => props.onQuestionSubmit(e)}>
-									<input 
-										type='text' 	 
-										id={message.key}
-										onChange={(e) => props.onHandleTextInputChange(message.key, message.validationTypes, e)} />
-									<button 
-										className="btn"
-										type="submit"
-										disabled={props.validationErrors.length}
-										onClick={() => props.onButtonSelect(message.id, message.key)}>Check Status</button>
-								</form>
-							</div>
-                        </div>
+                        <TextInput
+							message={message}
+							handlers={props}
+							validationErrors={props.validationErrors} />
                     }
 				</div>
 			)

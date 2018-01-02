@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Conversation from './components/conversation'
+import Questionnaire from './components//questionnaire'
 import Messages from './data.js'
 
 class App extends Component {
@@ -15,11 +15,10 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
-        <Conversation 
+        <Questionnaire 
           messages={Messages} />
       </div>
     );
   }
 }
-
 export default App;
