@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
 import '../styles/conversation.css';
-import Message from '../components/message';
-import SubmitButton from '../components/submit-button';
-import UserInput from '../components/user-input';
-import MessageLoading from '../components/message-loading';
-import CiValidation from '../core/ci-validation';
-import KeywordService from '../services/keyword-service';
-import RequestService from '../services/request-service';
+import Question from '../components/question';
+import Validator from '../core/ci-validation';
 
 var generateTemplateString = (function(){
     var cache = {};
@@ -27,53 +22,25 @@ var generateTemplateString = (function(){
 return generateTemplate;
 })();
 
-const SENDER = {
-    BOT: "bot",
-    HUMAN: "human"
-};
-
 class ConversationComponent extends Component {
     constructor(props) {
         super(props);
         
         this.state = this.getInitialState();
         this.state.messages = this.props.messages;
-
-        /**Service References */
-        this.keywordService = new KeywordService();
-        this.requestService = new RequestService();
     };
 
     getInitialState = () => {
         return {
-            activeMessageNumber: 0,
             activeMessage: {},
-            answers: {},
+			answers: {},
+			validationErrors: [],
             log: [],
-            isLoading: false,
-            userInput: '',
-            disableUserInput: true,
-            dynamicCallback: null
+			isLoading: false,
+			messages: this.props.messages
         };
     };
     
-    handleUserInput = (e) => {
-        e.preventDefault();
-        this.setState({
-            userInput: e.target.value,
-        });
-    };
-
-    handleInputErrors = (errors) => {
-        var errorMessage = {
-            text: errors[0].message,
-            sender: SENDER.BOT
-        };
-        this.setState({
-            log: this.state.log.concat(errorMessage)
-        });
-    };
-
     moveConversation = () => {
         var objDiv = document.getElementById("conversation");
         objDiv.scrollTop = objDiv.scrollHeight;
@@ -89,55 +56,128 @@ class ConversationComponent extends Component {
         this.setState(initialState, () => {
             this.startChat();
         });
-    };
-
-    getResponse = (message, shouldIncrement) => {
-        if (shouldIncrement === false) {
-            return {
-                nextStep: this.state.activeMessageNumber,
-                text: this.parseTemplate(message.text, this.state.answers)
-            };
-        }
-        let nextStep = this.state.activeMessageNumber + 1;
-
-        if (typeof message.text === 'string') {
-            return {
-                nextStep: this.state.activeMessageNumber + 1,
-                text: this.parseTemplate(message.text, this.state.answers)
-            };
-        }
-
-        //Answer Contains multiple responses
-        let targetField = message.key;
-        let targetValue = this.state.answers[targetField].toLowerCase();
-		let messageObj = message.text["default"];
-		let messageTextType = typeof message.text;
-
-		if (messageTextType === 'function') {
-			messageObj = message.text(this.state.answers);
+	};
+	
+	getMessageById = (id) => {
+		if (!id) {
+			return this.state.messages[0];
 		}
-		else {
-			if (message.text.hasOwnProperty(targetValue)) {
-				messageObj = message.text[targetValue];
+		return this.state.messages.filter(message => message.id === id)[0];
+	};
+
+    startChat() {
+        this.getNextMessage();
+	};
+	
+	addToLog = (item) => {
+		let log = this.state.log;
+		log.push(item);
+		this.setState({
+			log: log
+		});
+	};
+
+	getLogById = (id) => {
+		return this.state.log.filter(item => Object.hasOwnProperty.call(item, 'id') ? item.id === id : false)[0];
+	};
+
+	setLogQuestionToAnswered = (id) => {
+		const messageLog = this.state.log;
+		let logItemToUpdateIndex;
+		let logItemToUpdate;
+
+		for (let i = 0, len = messageLog.length; i < len; i++) {
+			const logItem = Object.assign({}, messageLog[i]);
+			const idExists = Object.hasOwnProperty.call(logItem, 'id');
+			const idMatches = logItem.id === id;
+
+			if (idExists && idMatches) {
+				logItemToUpdate = logItem;
+				logItemToUpdateIndex = i;
+				break;
 			}
 		}
 
-        if (messageObj.hasOwnProperty('nextStep')) {
-            nextStep = messageObj.nextStep - 1;
-        }
+		logItemToUpdate.isAnswered = true;
+		messageLog[logItemToUpdateIndex] = logItemToUpdate;
 
-        return {
-            nextStep: nextStep,
-            text: this.parseTemplate(messageObj.message, this.state.answers)
-        };
-    };
+		this.setState({
+			log: messageLog
+		});
+	};
 
-    getValidationErrors = (validationTypes, input) => {
+	setAnswer = (key, answer) => {
+		let answers = this.state.answers;
+		answers[key] = answer;
+
+		this.setState({
+			answers: answers
+		})
+	}
+
+    //This syntax is required to associate this method to the Conversation Component
+    //Otherwise the MessageComponent will be the scope and the Conversation state won't be available
+    //See https://babeljs.io/blog/2015/06/07/react-on-es6-plus
+    handleButtonSelect = (questionId, answerValue, answerInfo) => {
+		let activeQuestion = this.getMessageById(questionId);
+
+		if (!answerInfo) {
+			answerInfo = {};
+
+			// The answer must already be in the state
+			const answerObjExists = Object.hasOwnProperty.call(this.state.answers, answerValue);
+			const answer = answerObjExists && !!this.state.answers[answerValue] 
+				? this.state.answers[answerValue] : null;
+
+			if (!answerObjExists || !answer) {
+				return;
+			}
+
+			// Set the step = to the value in the state
+			answerInfo.text = answer;
+
+			//What is the next Step
+			// A custom method or the options should figure out what this is
+			var isMethod = typeof activeQuestion.options === 'function';
+
+			if (isMethod) {
+				answerInfo.nextStep = activeQuestion.options(this.state.answers);
+			}
+		}
+
+		// Set the active question to answered
+		this.setLogQuestionToAnswered(questionId);
+
+		// Push the answer to the question log
+		this.addToLog({
+			text: answerInfo.text,
+			type: 'answer'
+		});
+
+		// Add the answer to the answer list
+		this.setAnswer(activeQuestion.key, answerValue);
+
+		// Go to the next question, if it exists
+		this.getNextMessage(answerInfo.nextStep);
+	};
+
+    getNextMessage = (nextStep, callback) => {
+		// Get the next message
+		const nextMessage = this.getMessageById(nextStep);
+
+		// Allow for users to use answer data in their quetions and answers
+		nextMessage.text = this.parseTemplate(nextMessage.text, this.state.answers);
+
+		// Push the question to the log
+		this.addToLog(nextMessage);
+	};
+
+	getValidationErrors = (validationTypes, input, key) => {
         let validationErrors = [];
-        const ciValidation = new CiValidation();
+        const validator = new Validator();
 
         for (let validationType of validationTypes) {
-            var validationObj = ciValidation.Rules[validationType];
+            var validationObj = validator.Rules[validationType];
 
             if (!validationObj.test(input)) {
                 validationErrors.push({
@@ -146,250 +186,40 @@ class ConversationComponent extends Component {
                     message: validationObj.message
                 })
             }
-        }
-        return validationErrors;
+		}
+
+		var newErrors = this.state.validationErrors;
+		newErrors = newErrors.concat(validationErrors);
+
+		if (validationErrors.length) {
+			this.setState({
+				validationErrors: newErrors
+			})
+		}
+		else {
+			this.setState({
+				validationErrors: []
+			});
+		}	
+		return validationErrors;
     };
+	
+	handleTextInputChange = (questionKey, validationTypes, changeEvent) => {
+		const answers = this.state.answers;
+		const zipStr = changeEvent.target.value;
+		const validationErrors = this.getValidationErrors(validationTypes, zipStr, questionKey);
 
-    enableUserInput = () => {
-        this.setState({
-            disableUserInput: false
-        })
-        this.userInput.focus();
-    };
+		if (validationErrors.length === 0) {
+			answers[questionKey] = zipStr;
+		}
+		else {
+			answers[questionKey] = null;
+		}
 
-    submitUserInput = (e) => {
-        e.preventDefault();
-        if (this.state.userInput.length > 0) {
-            let answers = this.state.answers;
-            let activeMessage = this.state.activeMessage;
-            let userMessage = {
-                text: this.state.userInput,
-                sender: SENDER.HUMAN
-            };
-            let defaultState = {
-                answers: answers,
-                userInput: '',
-                disableUserInput: true,
-                log: this.state.log.concat(userMessage)
-            };
-           let errors = activeMessage.hasOwnProperty('validationTypes') ? 
-                this.getValidationErrors(activeMessage.validationTypes, this.state.userInput) : [];
-
-           if (errors.length) {
-                this.handleInputErrors(errors);
-           }
-           else {
-                if (activeMessage.hasOwnProperty('onSubmit')) {
-                    if (activeMessage.onSubmit.includes("checkKeywords")) {
-                        let possibleAnswers = this.keywordService.Get(userMessage.text);
-                        let answer = this.keywordService.PredictAnswer(possibleAnswers);
-
-                        //We really think we have an answer
-                        if (answer.length === 1) {
-                            this.setState(defaultState);
-                            //Remove the answer from possible answers
-                            possibleAnswers = possibleAnswers.filter(function(obj) {
-                                return obj.keyword !== answer[0].keyword;
-                            });
-                        }
-                        
-                        this.doWork(possibleAnswers, answer, activeMessage.key);
-                    }
-                    if (activeMessage.onSubmit.includes("googleMap"))  {
-
-                    }
-                    if (activeMessage.onSubmit.includes("checkForExistingRequest"))  {
-                        this.setState(defaultState, () => {
-                            let records = this.requestService.Get({
-                                id: 1,
-                                address: "400 Washington Ave Towson, MD 21204"
-                            }).then((records) => {
-                                if (records.length) {
-                                    let existingText = this.parseTemplate('This ${serviceType} request', this.state.answers) +
-                                        this.parseTemplate(' already exists, you can find out more information <a href="${followUpUrl}">here</a>', records[0]);
-                                    let existingMessage = {
-                                        text: existingText,
-                                        sender: SENDER.BOT
-                                    };
-                                    
-                                    //Should only be one record
-                                    this.setState({
-                                        answers: answers,
-                                        userInput: '',
-                                        disableUserInput: true,
-                                        log: this.state.log.concat(existingMessage)
-                                    });
-                                }
-                            });
-                        }); 
-                    }
-                }
-                else {
-                    answers[activeMessage.key] = this.state.userInput;
-                    this.setState({
-                        answers: answers,
-                        userInput: '',
-                        disableUserInput: true,
-                        log: this.state.log.concat(userMessage)
-                    });
-
-                    this.nextMessage();
-                }
-           }
-        }
-    };
-
-    startChat() {
-        this.state.log.push({
-            text: "Chat Started at " + new Date().toString(),
-            sender: "system"
-        })
-        this.nextMessage();
-    };
-
-    //This syntax is required to associate this method to the Conversation Component
-    //Otherwise the MessageComponent will be the scope and the Conversation state won't be available
-    //See https://babeljs.io/blog/2015/06/07/react-on-es6-plus
-    handleButtonSelect = (select) => {
-            let options = this.state.answers;
-            let activeMessage = this.state.activeMessage;
-            let isDynamic = !activeMessage.hasOwnProperty('id') && typeof this.state.dynamicCallback === 'function' && select.value === "false";
-            let targetMessage = null;
-            let userMessage = {
-                text: select.text,
-                sender: SENDER.HUMAN
-            };
-
-           options[activeMessage.key] = select.value;
-        
-           let convoLog = this.state.log.slice();
-           convoLog[convoLog.length - 1].isAnswered = true;
-           convoLog.push(userMessage); //Add the users' answer
-
-            this.setState({
-                answers: options,
-                userInput: '',
-                disableUserInput: true,
-                log: convoLog
-            });
-
-            if (isDynamic) {
-                var possibleAnswers = this.state.dynamicCallback();
-                this.setState({
-                    dynamicCallback: null
-                });
-
-                var newOptions = possibleAnswers.map(function(answer) {
-                    return {
-                        text: answer.keyword,
-                        value: answer.keyword
-                    };
-                });
-
-                newOptions.push({
-                    text: "Other",
-                    value: "false"
-                })
-
-                targetMessage = {
-                    "text": "Select a type of report that more accurately reports your problem.",
-                    "sender": SENDER.BOT,
-                    "fieldType": "radio",
-                    "key": "serviceType",
-                    "options": newOptions
-                };
-
-                this.nextMessage(targetMessage);
-
-                return;
-            }
-
-            this.nextMessage();
-    };
-
-    //TODO - Rename
-    doWork = (possibleAnswers, answer, key) => {
-        var botMessage = {};
-        if (answer.length === 1) {
-            let messageText = this.parseTemplate("Are you sure you want to report a ${keyword}?", answer[0]);
-            botMessage = {
-                sender: SENDER.BOT,
-                text: messageText,
-                fieldType: "radio",
-                targetKey: key,
-                key: "serviceTypeConfirm",
-                options: [
-                    {
-                        text: "Yes",
-                        value: answer[0].keyword,
-                    },
-                    {
-                        text: "No, I want to report something else",
-                        value: "false",
-                    }
-                ]
-            };
-            
-            this.nextMessage(botMessage, () => {
-                //Handle a negative response
-                this.setState({
-                    dynamicCallback: function() {
-                        return possibleAnswers;
-                    }
-                })
-            });
-        }
-    };
-
-    nextMessage = (message, callback) => {
-        let shouldIncrement = !message;
-        if (this.state.activeMessageNumber < this.state.messages.length) {
-            this.setState({ isLoading: true });
-            let activeMessage = message || Object.assign({}, this.state.messages[this.state.activeMessageNumber]);
-            let isQuestion = activeMessage.hasOwnProperty('key');
-            let response = this.getResponse(activeMessage, shouldIncrement);
-            activeMessage.text = response.text;
-            let delay = activeMessage.text.length * 20;
-            let activeMessageNumber = response.nextStep;
-
-            if (activeMessage.hasOwnProperty('targetKey')) {
-                activeMessage.key = activeMessage.targetKey;
-            }
-
-            setTimeout(() => {
-                this.setState({
-                    activeMessage: activeMessage,
-                    activeMessageNumber: activeMessageNumber,
-                    isLoading: false,
-                    log: this.state.log.concat(activeMessage)
-                }, () => {
-                    this.moveConversation();
-                    if (callback && typeof callback === 'function') {
-                        callback();
-                    }
-                })
-
-                if (isQuestion && activeMessage.fieldType === 'text') {
-                    this.enableUserInput();
-                }
-                else if (isQuestion && activeMessage.fieldType === 'radio') {
-                    //DO NOTHING???
-                }
-                else {
-                    if (!activeMessage.isLastMessage) {
-                        this.nextMessage();
-                    }
-                }
-
-                console.log(this.state.answers);
-            }, 100);
-        }
-        else {
-            this.state.log.push({
-                text: "Good Bye, I love you. I mean...This got akward real quick."
-            })
-        }  
-    };
+		this.setState({
+			answers: answers
+		});
+	};
 
     componentWillMount() {
         this.startChat();
@@ -407,30 +237,15 @@ class ConversationComponent extends Component {
                             <p>Loading</p>
                         }
                         {this.state.log.map((message, index) => {
-                            return <Message 
-                                        key={index}
-                                        message={message}
-                                        onButtonSelect={this.handleButtonSelect} />
-                        })}
-                        {this.state.isLoading && 
-                            <MessageLoading bot />
-                        }
+                            return <Question 
+										key={index}
+										validationErrors={this.state.validationErrors}
+										message={message}
+										onButtonSelect={this.handleButtonSelect}
+										onHandleTextInputChange={this.handleTextInputChange} />
+						})}
                     </section>
                 </section>
-                <footer className="footer">
-                    <div className="input-container">
-                        <form onSubmit={e => this.submitUserInput(e)}>
-                            <UserInput
-                                type="text"
-                                value={userInput}
-                                innerRef={input => this.userInput = input }
-                                onChange={e => this.handleUserInput(e)}
-                                disabled={disableUserInput}
-                                />
-                            <SubmitButton>↩</SubmitButton>
-                        </form>
-                    </div>
-                </footer>
             </div>
         );
     }
