@@ -4,7 +4,9 @@ import '../styles/answer.css';
 class AnswerComponent extends Component {
     render() {
         return (
-            <p className="answer" dangerouslySetInnerHTML={{__html: this.props.message.text}}></p>
+			<p 
+				className="answer" 
+				dangerouslySetInnerHTML={{__html: this.props.message.text}}></p>
         );
     }
 }
