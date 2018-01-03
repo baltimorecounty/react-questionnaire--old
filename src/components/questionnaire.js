@@ -7,15 +7,17 @@ class QuestionnaireComponent extends Component {
     constructor(props) {
         super(props);
         
-        this.state = this.getInitialState();
-        this.state.messages = this.props.messages;
+		this.state = this.getInitialState();
+
+		this.handleButtonSelect = this.handleButtonSelect.bind(this);
+		this.handleTextInputChange = this.handleTextInputChange.bind(this);
 	};
 
 	componentWillMount() {
         this.startQuestionnaire();
     };
 
-	getInitialState = () => {
+	getInitialState() {
         return {
             activeMessage: {},
 			answers: {},
@@ -26,7 +28,7 @@ class QuestionnaireComponent extends Component {
         };
 	};
 	
-	addToLog = (item) => {
+	addToLog(item) {
 		let log = this.state.log;
 		log.push(item);
 		this.setState({
@@ -34,18 +36,20 @@ class QuestionnaireComponent extends Component {
 		});
 	};
 
-	getLogById = (id) => {
-		return this.state.log.filter(item => Object.hasOwnProperty.call(item, 'id') ? item.id === id : false)[0];
+	getLogById(id) {
+		return this.state.log
+			.filter(item => Object.hasOwnProperty.call(item, 'id') ? item.id === id : false)[0];
 	};
 
-	getMessageById = (id) => {
+	getMessageById(id) {
 		if (!id) {
 			return this.state.messages[0];
 		}
-		return this.state.messages.filter(message => message.id === id)[0];
+		return this.state.messages
+			.filter(message => message.id === id)[0];
 	};
 
-	getNextMessage = (nextStep, callback) => {
+	getNextMessage(nextStep, callback) {
 		// Get the next message
 		const nextMessage = this.getMessageById(nextStep);
 
@@ -53,7 +57,7 @@ class QuestionnaireComponent extends Component {
 		this.addToLog(nextMessage);
 	};
 
-	getValidationErrors = (validationTypes, input, key) => {
+	getValidationErrors(validationTypes, input, key) {
         let validationErrors = [];
         const validator = new Validator();
 
@@ -85,7 +89,7 @@ class QuestionnaireComponent extends Component {
 		return validationErrors;
 	};
 
-	handleButtonSelect = (questionId, answerValue, answerInfo) => {
+	handleButtonSelect(questionId, answerValue, answerInfo) {
 		let activeQuestion = this.getMessageById(questionId);
 
 		if (!answerInfo) {
@@ -127,13 +131,8 @@ class QuestionnaireComponent extends Component {
 		// Go to the next question, if it exists
 		this.getNextMessage(answerInfo.nextStep);
 	};
-
-	handleFormSubmit = (e) => {
-		console.log(e);
-
-	};
 	
-	handleTextInputChange = (questionKey, validationTypes, changeEvent) => {
+	handleTextInputChange(questionKey, validationTypes, changeEvent) {
 		const answers = this.state.answers;
 		const zipStr = changeEvent.target.value;
 		const validationErrors = this.getValidationErrors(validationTypes, zipStr, questionKey);
@@ -150,14 +149,14 @@ class QuestionnaireComponent extends Component {
 		});
 	};
 
-    restartQuestionnaire = () => {
+    restartQuestionnaire() {
         var initialState = this.getInitialState();
         this.setState(initialState, () => {
             this.startQuestionnaire();
         });
 	};
 
-	setAnswer = (key, answer) => {
+	setAnswer(key, answer) {
 		let answers = this.state.answers;
 		answers[key] = answer;
 
@@ -166,7 +165,7 @@ class QuestionnaireComponent extends Component {
 		})
 	}
 
-	setLogQuestionToAnswered = (id) => {
+	setLogQuestionToAnswered(id) {
 		const messageLog = this.state.log;
 		let logItemToUpdateIndex;
 		let logItemToUpdate;
