@@ -41,8 +41,10 @@ class QuestionnaireComponent extends Component {
 	};
 
 	getMessageById(id) {
-		const targetMessage = this._getStateItemById('messages', id);
-		return targetMessage.length ? targetMessage : this.state.messages[0];
+		if (!id) {
+			return this.state.messages[0];
+		}
+		return this._getStateItemById('messages', id);
 	};
 
 	getNextMessage(nextStep, callback) {
