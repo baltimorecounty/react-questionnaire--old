@@ -15,7 +15,7 @@ class TextInputAnswerComponent extends Component {
 							className="btn"
 							type="submit"
 							disabled={validationErrors.length}
-							onClick={() => handlers.onButtonSelect(message.id, message.key)}>Check Status</button>
+							onClick={() => handlers.onButtonSelect(message.id, message.key)}>Check Availability</button>
 					</form>
 				</div>
 			</div>
