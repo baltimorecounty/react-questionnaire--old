@@ -170,10 +170,9 @@ class QuestionnaireComponent extends Component {
 
 		for (let i = 0, len = messageLog.length; i < len; i++) {
 			const logItem = Object.assign({}, messageLog[i]);
-			const idExists = Object.hasOwnProperty.call(logItem, 'id');
 			const idMatches = logItem.id === id;
 
-			if (idExists && idMatches) {
+			if (idMatches) {
 				logItemToUpdate = logItem;
 				logItemToUpdateIndex = i;
 				break;
