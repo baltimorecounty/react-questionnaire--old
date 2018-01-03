@@ -5,11 +5,6 @@
 .message--human {
     text-align: right;
 }
-
-.message .text {
-    border-radius: 10px;
-    padding: 10px 20px;
-}
 .message--bot .text {
     background-color: #f4f4f4;
     max-width: 66%;

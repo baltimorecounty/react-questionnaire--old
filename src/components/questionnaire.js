@@ -226,8 +226,7 @@ class QuestionnaireComponent extends Component {
         const { userInput, disableUserInput } = this.state;
 
         return (
-            <div className="container conversation-container">
-                <button onClick={this.restartQuestionnaire}>Restart Chat</button>
+            <div className="conversation-container">
                 <section id="conversation" className="conversation">
                     <section className="conversation-body">
                         {this.state.isLoading &&

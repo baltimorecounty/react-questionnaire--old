@@ -1,6 +1,4 @@
 .answer {
-	padding-bottom: 10px;
-}
-.answer--no-options {
-	border: none;
+	margin: 0 !important;
+	padding-bottom: 0;
 }

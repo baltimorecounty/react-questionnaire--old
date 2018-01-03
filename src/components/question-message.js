@@ -6,7 +6,7 @@ class QuestionMessageComponent extends Component {
     render() {
         return (
             <div className="message message--question">
-                <div className="text" dangerouslySetInnerHTML={{__html: this.props.message.text}} />
+                <p className="text" dangerouslySetInnerHTML={{__html: this.props.message.text}} />
             </div>
         );
     }

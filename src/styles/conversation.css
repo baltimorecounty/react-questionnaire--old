@@ -1,13 +1,8 @@
-.conversation-container {
-    margin: 10px auto;
-    max-width: 700px;
-    width: 100%;
-}
 .conversation {
     font-size: 16px;
     margin: 0;
-    padding: 20px;
-    padding-bottom: 60px;
+}
 
-    border: 1px solid lightgray;
+#spayNeuterFormResults {
+	margin: 15px auto;
 }
