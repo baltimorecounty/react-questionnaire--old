@@ -12,7 +12,7 @@ class TextInputAnswerComponent extends Component {
 							id={message.key}
 							onChange={(e) => handlers.onHandleTextInputChange(message.key, message.validationTypes, e)} />
 						<button 
-							className="contentButton"
+							className="btn contentButton"
 							type="submit"
 							disabled={validationErrors.length}
 							onClick={() => handlers.onButtonSelect(message.id, message.key)}>Check Eligibility</button>
