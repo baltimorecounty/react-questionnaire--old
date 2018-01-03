@@ -3,25 +3,6 @@ import '../styles/conversation.css';
 import Question from '../components/question';
 import Validator from '../core/ci-validation';
 
-const generateTemplateString = (function(){
-    var cache = {};
-    function generateTemplate(template){
-    var fn = cache[template];
-    if (!fn){
-    // Replace ${expressions} (etc) with ${map.expressions}.
-    var sanitized = template
-        .replace(/\$\{([\s]*[^;\s\{]+[\s]*)\}/g, function(_, match){
-            return `\$\{map.${match.trim()}\}`;
-            })
-        // Afterwards, replace anything that's not ${map.expressions}' (etc) with a blank string.
-        .replace(/(\$\{(?!map\.)[^}]+\})/g, '');
-    fn = Function('map', `return \`${sanitized}\``);
-    }
-    return fn;
-};
-return generateTemplate;
-})();
-
 class QuestionnaireComponent extends Component {
     constructor(props) {
         super(props);
@@ -67,9 +48,6 @@ class QuestionnaireComponent extends Component {
 	getNextMessage = (nextStep, callback) => {
 		// Get the next message
 		const nextMessage = this.getMessageById(nextStep);
-
-		// Allow for users to use answer data in their quetions and answers
-		nextMessage.text = this.parseTemplate(nextMessage.text, this.state.answers);
 
 		// Push the question to the log
 		this.addToLog(nextMessage);
@@ -171,11 +149,6 @@ class QuestionnaireComponent extends Component {
 			answers: answers
 		});
 	};
-
-    parseTemplate = (messageText, data) => {
-        let template = generateTemplateString(messageText);
-        return template(data);
-    };
 
     restartQuestionnaire = () => {
         var initialState = this.getInitialState();
