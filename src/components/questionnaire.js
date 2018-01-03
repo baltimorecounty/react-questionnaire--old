@@ -37,8 +37,10 @@ class QuestionnaireComponent extends Component {
 	};
 
 	getLogById(id) {
-		return this.state.log
-			.filter(item => Object.hasOwnProperty.call(item, 'id') ? item.id === id : false)[0];
+		const logs = this.state.log
+			.filter((item) => this._filterLogById(item, id));
+
+		return logs.length ? logs[0] : [];
 	};
 
 	getMessageById(id) {
@@ -192,6 +194,10 @@ class QuestionnaireComponent extends Component {
 	
     startQuestionnaire() {
         this.getNextMessage();
+	};
+
+	_filterLogById(item, id) {
+		return Object.hasOwnProperty.call(item, 'id') ? item.id === id : false;
 	};
 	
     render() {
