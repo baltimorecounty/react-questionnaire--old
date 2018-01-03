@@ -37,18 +37,12 @@ class QuestionnaireComponent extends Component {
 	};
 
 	getLogById(id) {
-		const logs = this.state.log
-			.filter((item) => this._filterLogById(item, id));
-
-		return logs.length ? logs[0] : [];
+		return this._getStateItemById('log', id);
 	};
 
 	getMessageById(id) {
-		if (!id) {
-			return this.state.messages[0];
-		}
-		return this.state.messages
-			.filter(message => message.id === id)[0];
+		const targetMessage = this._getStateItemById('messages', id);
+		return targetMessage.length ? targetMessage : this.state.messages[0];
 	};
 
 	getNextMessage(nextStep, callback) {
@@ -196,9 +190,16 @@ class QuestionnaireComponent extends Component {
         this.getNextMessage();
 	};
 
-	_filterLogById(item, id) {
+	_filterObjectArray(item, id) {
 		return Object.hasOwnProperty.call(item, 'id') ? item.id === id : false;
 	};
+
+	_getStateItemById(targetObjectArr, id) {
+		const objects = this.state[targetObjectArr]
+			.filter((item) => this._filterObjectArray(item, id));
+
+		return objects.length ? objects[0] : [];
+	}
 	
     render() {
         const { userInput, disableUserInput } = this.state;
