@@ -218,7 +218,6 @@ class QuestionnaireComponent extends Component {
 										validationErrors={this.state.validationErrors}
 										message={message}
 										onButtonSelect={this.handleButtonSelect}
-										onQuestionSubmit={this.handleFormSubmit}
 										onHandleTextInputChange={this.handleTextInputChange} />
 						})}
                     </section>
