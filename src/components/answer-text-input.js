@@ -7,13 +7,13 @@ class TextInputAnswerComponent extends Component {
 		this.state = this.getInitialState();
 	}
 
-	getInitialState = () => {
+	getInitialState() {
 		return {
 			inputValue: ''
 		};
 	};
 
-	setInputValue = (onInputChangeEvent) => {
+	setInputValue(onInputChangeEvent) {
 		const { message } = this.props;
 
 		this.setState({
@@ -25,6 +25,7 @@ class TextInputAnswerComponent extends Component {
 	
     render() {
 		const { message, handlers, validationErrors } = this.props;
+		
         return (
 			<div className="message--question form">
 				<div key={message.key} className="form-field">
