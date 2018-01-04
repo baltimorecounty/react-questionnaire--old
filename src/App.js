@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Questionnaire from './components//questionnaire'
-import Messages from './data.js'
+import Messages from './spay-neuter.questions'
 
 class App extends Component {
   render() {
