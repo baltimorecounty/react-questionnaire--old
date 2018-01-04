@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import '../styles/conversation.css';
 import Question from '../components/question';
-import Validator from '../core/ci-validation';
+import Utilities from '../core/utils';
+import ValidationRules from '../core/ci-validation';
 
 class QuestionnaireComponent extends Component {
     constructor(props) {
-        super(props);
-        
+		super(props);
+		
+		this.utils = new Utilities();
 		this.state = this.getInitialState();
 
 		this.handleButtonSelect = this.handleButtonSelect.bind(this);
@@ -37,14 +39,14 @@ class QuestionnaireComponent extends Component {
 	};
 
 	getLogById(id) {
-		return this._getStateItemById('log', id);
+		return this.utils.getArrItemById(this.state.log, id);
 	};
 
 	getMessageById(id) {
 		if (!id) {
 			return this.state.messages[0];
 		}
-		return this._getStateItemById('messages', id);
+		return this.utils.getArrItemById(this.state.messages, id);
 	};
 
 	getNextMessage(nextStep, callback) {
@@ -57,10 +59,9 @@ class QuestionnaireComponent extends Component {
 
 	getValidationErrors(validationTypes, input, key) {
         let validationErrors = [];
-        const validator = new Validator();
 
         for (let validationType of validationTypes) {
-            var validationObj = validator.Rules[validationType];
+            var validationObj = ValidationRules[validationType];
 
             if (!validationObj.test(input)) {
                 validationErrors.push({
@@ -190,17 +191,6 @@ class QuestionnaireComponent extends Component {
     startQuestionnaire() {
         this.getNextMessage();
 	};
-
-	_filterObjectArray(item, id) {
-		return Object.hasOwnProperty.call(item, 'id') ? item.id === id : false;
-	};
-
-	_getStateItemById(targetObjectArr, id) {
-		const objects = this.state[targetObjectArr]
-			.filter((item) => this._filterObjectArray(item, id));
-
-		return objects.length ? objects[0] : [];
-	}
 	
     render() {
         const { userInput, disableUserInput } = this.state;
