@@ -14,12 +14,10 @@ function Question(message, props) {
             return (
                 <div>
                     <QuestionMessage message={message} />
-                    {!message.isAnswered && message.fieldType === 'radio' &&
-						<RadioInput 
-							message={message}
-							optionKeys={optionKeys} 
-							handlers={props} />
-					}
+					<RadioInput 
+						message={message}
+						optionKeys={optionKeys} 
+						handlers={props} />
                 </div>
             )
 		}
@@ -27,16 +25,13 @@ function Question(message, props) {
 			return (
 				<div>
 					<QuestionMessage message={message} />
-					{!message.isAnswered && message.fieldType === 'text' &&
-                        <TextInput
-							message={message}
-							handlers={props}
-							validationErrors={props.validationErrors} />
-                    }
+					<TextInput
+						message={message}
+						handlers={props}
+						validationErrors={props.validationErrors} />
 				</div>
 			)
 		}
-
 		return <Answer message={message} />;
 }
 

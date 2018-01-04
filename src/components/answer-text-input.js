@@ -20,7 +20,12 @@ class TextInputAnswerComponent extends Component {
 			inputValue: onInputChangeEvent.target.value
 		});
 
-		this.props.handlers.onHandleTextInputChange(message.key, message.validationTypes, onInputChangeEvent);
+		this.props.handlers
+			.onHandleTextInputChange(message.key, message.validationTypes, onInputChangeEvent);
+	}
+
+	onQuestionSubmit(submitEvent) {
+		submitEvent.preventDefault();
 	}
 	
     render() {
@@ -29,10 +34,12 @@ class TextInputAnswerComponent extends Component {
         return (
 			<div className="message--question form">
 				<div key={message.key} className="form-field">
-					<form onSubmit={(e) => handlers.onQuestionSubmit(e)}>
+					<form onSubmit={this.onQuestionSubmit}>
 						<input 
 							type='text' 	 
 							id={message.key}
+							disabled={message.isAnswered}
+							value={message.isAnswered && message.answer}
 							onChange={(e) => this.setInputValue(e) } />
 						<button 
 							className="btn contentButton"

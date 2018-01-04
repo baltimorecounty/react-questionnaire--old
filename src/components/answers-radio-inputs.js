@@ -9,7 +9,9 @@ class RadioInputAnswerComponent extends Component {
 					<div key={key} className="form-field">
 						<input 
 							type='radio' 
-							onClick={() => handlers.onButtonSelect(message.id, key, message.options[key])} 
+							onClick={() => handlers.onButtonSelect(message.id, key, message.options[key])}
+							disabled={message.isAnswered}
+							checked={message.isAnswered && message.answer === message.options[key].text}
 							id={message.options[key].text} 
 							value={message.options[key].text} />
 						<label 

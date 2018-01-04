@@ -116,13 +116,10 @@ class QuestionnaireComponent extends Component {
 		}
 
 		// Set the active question to answered
-		this.setLogQuestionToAnswered(questionId);
+		this.setLogQuestionToAnswered(questionId, answerInfo.text);
 
 		// Push the answer to the question log
-		this.addToLog({
-			text: answerInfo.text,
-			type: 'answer'
-		});
+		//this.addToLog(activeQuestion);
 
 		// Add the answer to the answer list
 		this.setAnswer(activeQuestion.key, answerValue);
@@ -164,13 +161,13 @@ class QuestionnaireComponent extends Component {
 		})
 	}
 
-	setLogQuestionToAnswered(id) {
+	setLogQuestionToAnswered(id, answer) {
 		const messageLog = this.state.log;
 		let logItemToUpdateIndex;
 		let logItemToUpdate;
 
 		for (let i = 0, len = messageLog.length; i < len; i++) {
-			const logItem = Object.assign({}, messageLog[i]);
+			const logItem = messageLog[i];
 			const idMatches = logItem.id === id;
 
 			if (idMatches) {
@@ -181,6 +178,7 @@ class QuestionnaireComponent extends Component {
 		}
 
 		logItemToUpdate.isAnswered = true;
+		logItemToUpdate.answer = answer;
 		messageLog[logItemToUpdateIndex] = logItemToUpdate;
 
 		this.setState({
