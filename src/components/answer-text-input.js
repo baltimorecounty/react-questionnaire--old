@@ -41,11 +41,13 @@ class TextInputAnswerComponent extends Component {
 							disabled={message.isAnswered}
 							value={message.isAnswered && message.answer}
 							onChange={(e) => this.setInputValue(e) } />
-						<button 
-							className="btn contentButton"
-							type="submit"
-							disabled={!this.state.inputValue || validationErrors.length}
-							onClick={() => handlers.onButtonSelect(message.id, message.key)}>Check Eligibility</button>
+						{!message.isAnswered &&
+							<button 
+								className="btn contentButton"
+								type="submit"
+								disabled={!this.state.inputValue || validationErrors.length}
+								onClick={() => handlers.onButtonSelect(message.id, message.key)}>Check Eligibility</button>
+						}
 					</form>
 				</div>
 			</div>
