@@ -118,9 +118,6 @@ class QuestionnaireComponent extends Component {
 		// Set the active question to answered
 		this.setLogQuestionToAnswered(questionId, answerInfo.text);
 
-		// Push the answer to the question log
-		//this.addToLog(activeQuestion);
-
 		// Add the answer to the answer list
 		this.setAnswer(activeQuestion.key, answerValue);
 
