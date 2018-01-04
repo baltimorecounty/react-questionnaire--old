@@ -3,8 +3,6 @@ import '../styles/answer.css';
 
 class RadioInput extends Component {
     render() {
-		const { message, handlers } = this.props;
-
         return (
 			<p 
 				className="answer" 
