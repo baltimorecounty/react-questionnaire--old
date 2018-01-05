@@ -13,20 +13,25 @@ class QuestionnaireComponent extends Component {
 
 		this.handleButtonSelect = this.handleButtonSelect.bind(this);
 		this.handleTextInputChange = this.handleTextInputChange.bind(this);
+		this.restartQuestionnaire = this.restartQuestionnaire.bind(this);
 	};
 
 	componentWillMount() {
         this.startQuestionnaire();
-    };
-
+	};
+	
 	getInitialState() {
+		this.resetMessages();
+
         return {
             activeMessage: {},
 			answers: {},
 			validationErrors: [],
             log: [],
 			isLoading: false,
-			messages: this.props.messages
+			isFinished: false,
+			messages: this.props.messages,
+			
         };
 	};
 	
@@ -55,6 +60,13 @@ class QuestionnaireComponent extends Component {
 
 		// Push the question to the log
 		this.addToLog(nextMessage);
+
+		const isLastMessage = !Object.hasOwnProperty.call(nextMessage, 'options');
+		if (isLastMessage) {
+			this.setState({
+				isFinished: true,
+			})
+		}
 	};
 
 	getValidationErrors(validationTypes, input, key) {
@@ -142,6 +154,13 @@ class QuestionnaireComponent extends Component {
 		});
 	};
 
+	resetMessages() {
+		this.props.messages.forEach((message) => {
+			message.answer = null;
+			message.isAnswered = false;
+		});
+	}
+
     restartQuestionnaire() {
         var initialState = this.getInitialState();
         this.setState(initialState, () => {
@@ -206,6 +225,10 @@ class QuestionnaireComponent extends Component {
 										onHandleTextInputChange={this.handleTextInputChange} />
 						})}
                     </section>
+					{this.state.isFinished &&
+						<a className="btn-link"
+							onClick={this.restartQuestionnaire}>Start Over?</a>
+					}
                 </section>
             </div>
         );
