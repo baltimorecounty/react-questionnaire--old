@@ -12,10 +12,10 @@ class RadioInputAnswerComponent extends Component {
 							onClick={() => handlers.onButtonSelect(message.id, key, message.options[key])}
 							disabled={message.isAnswered}
 							checked={message.isAnswered && message.answer === message.options[key].text}
-							id={message.options[key].text} 
+							id={message.key + '-' + message.options[key].text} 
 							value={message.options[key].text} />
 						<label 
-							htmlFor={message.options[key].text}>{message.options[key].text}</label>
+							htmlFor={message.key + '-' + message.options[key].text}>{message.options[key].text}</label>
 					</div>
 				)}
 			</div>
