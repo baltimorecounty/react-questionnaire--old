@@ -39,7 +39,7 @@ class TextInputAnswerComponent extends Component {
 							type='text' 	 
 							id={message.key}
 							disabled={message.isAnswered}
-							value={message.isAnswered && message.answer}
+							value={this.state.inputValue}
 							onChange={(e) => this.setInputValue(e) } />
 						{!message.isAnswered &&
 							<button 
