@@ -91,7 +91,7 @@ export default [
 	},
 	{ // Free, Dundalk
 		id: 12,
-		text: "<div id=\"spayNeuterFormResults\" class=\"bc-form-control alert-success\" style=\"\" aria-hidden=\"false\" role=\"alert\"><p>Good news! You're eligible for a <strong>free procedure</strong> at our Dundalk facility at  7702 Dunmanway.</p><ul><li><a href=\"https://clinichq.com/online/144afb8f-6c15-4f15-8e16-9417a4f85823\">Book Now at Southwest Area Park</a></li></ul></div>"
+		text: "<div id=\"spayNeuterFormResults\" class=\"bc-form-control alert-success\" style=\"\" aria-hidden=\"false\" role=\"alert\"><p>Good news! You're eligible for a <strong>free procedure</strong> at our Dundalk facility at  7702 Dunmanway.</p><ul><li><a href=\"https://clinichq.com/online/144afb8f-6c15-4f15-8e16-9417a4f85823\">Book Now at Dundalk</a></li></ul></div>"
 	},
 	{ // Free, SWAP Center
 		id: 13,
