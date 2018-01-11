@@ -1,36 +1,8 @@
-.conversation-container {
-    margin: 10px auto;
-    max-width: 700px;
-    width: 100%;
-}
 .conversation {
     font-size: 16px;
-    position: relative;
-    overflow-y: scroll;
-    height: 500px;
     margin: 0;
-    padding: 20px;
-    padding-bottom: 60px;
+}
 
-    border: 1px solid lightgray;
-}
-.footer {
-    width: 100%;
-    padding: 0;
-}
-.conversation .footer .input-container {
-    position: relative;
-}
-.conversation .footer .send-btn {
-    position: absolute;
-    z-index: 99;
-    right: 0;
-
-    padding: 10px;
-}
-.conversation .user-input {
-    font-size: 18px;
-
-    width: 100%;
-    padding: 10px;
+#spayNeuterFormResults {
+	margin: 15px auto;
 }
