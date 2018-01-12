@@ -56,15 +56,38 @@ options: function(answers) {
 }
 ```
 
+You can access any question that has already been answered, but you can't access any unanswered questions.
 
 
 ### Plain Old Message
 
 If a message only contains an id, and a text property than this will a plain message. Typically the only place you will use these are at the end of a questionnaire. Important to emphasize, the text in these message can be html, so that you can display other things than just text, like links and buttons.
 
+## Adding the Questionaire to your Web App or Page
 
+Setting up the app is pretty easy. (This assumes the questionaire css and javascript is already being hosted).
 
+1. Add the root div for your app
+1. Add the script for your data file. It is very important this is referenced before your main javascript file.
+1. Add the script for the questionnaire component
+
+```html
+<div id="root"></div><!-- questionnaire will be generated inside this div -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser-polyfill.min.js"></script> <!-- this polyfill lets our app work in more browsers -->
+<script src="/the/path/to/my/datafile.js"></script>
+<script src="/the/path/to/the/questionaire-component.js"></script>
+```
+
+This *html snippet* should be included just before the end body tag of your page.
 
 ## Maintenance
+
+### Running the app
+
+It's easy to run the app, in your favorite cli run ```npm start``` or ```yarn start```
+
+### Building the app for Production
+
+It's easy to run the app, in your favorite cli run ```npm run-script build``` or ```yarn run build```
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app). If you want to learn more about it, go [here](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md).
