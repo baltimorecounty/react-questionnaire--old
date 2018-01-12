@@ -202,3 +202,5 @@ Add the following to it where you want the app to display:
 <script src="/the/path/to/my/datafile.js"></script>
 <script src="/the/path/to/the/questionaire-component.js"></script>
 ```
+
+Make sure the questions work as you setup, if not modify them as needed.
