@@ -18,14 +18,14 @@ var bcQuestionnaire = {
 There are two types of messages, ```question``` and ```normal```
 
 Each message must contain the following information.
-- id - unique identifier for the Question, each message must have a unique id
-- text - text will be the message you want to display to the user, this may be a question, message, or html 
+- **id** - unique identifier for the Question, each message must have a unique id
+- **text** - text will be the message you want to display to the user, this may be a question, message, or html 
 
 ### Question
 A question is pretty straight forward, but additional information.
-- key - this must be unique value, and identify the data that you want answer. ```example: 
-- fieldType -  right now this can only be ```radio``` or ```text```. However, although text would work, it is tightly tied to the spay/neuter questions and needs to be [updated](#1) to be more flexible (as of 1/11/2018).
-- options - provides the friendly values we want the user to see, the value we want to use in our code, and the next message to display. Options can either be a javascript object or a function that returns the next step. 
+- **key** - this must be unique value, and identify the data that you want answer. ```example: "isCountyResident"```
+- **fieldType** -  right now this can only be ```radio``` or ```text```. However, although text would work, it is tightly tied to the spay/neuter questions and needs to be [updated](#1) to be more flexible (as of 1/11/2018).
+- **options** - provides the friendly values we want the user to see, the value we want to use in our code, and the next message to display. Options can either be a javascript object or a function that returns the next step. 
 
 #### Options as an Object
 In the below example values could be based on the question `Do you have a cat?`. The answer would be clearly yes (true) or no (false). The text property is the value that we want to display to the user in the label associated with the radio button. Finally, the ```nextStep``` property is always an integer will be the id of the next message you would like the user to be shown. This message can be a question, or a message.
