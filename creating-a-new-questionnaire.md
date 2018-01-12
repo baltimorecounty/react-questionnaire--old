@@ -7,9 +7,9 @@ In this example, we will build a questionnaire that will evaluate this guide. (I
 Our requirements are
 
 - Ask the user if they had any problems creating this sample questionnaire. Possible answers are "Yes" and "No"
-- If the user answers "Yes", we then want to ask them another question, if they answer "No", we want to display a message "Glad we could help :smile:"
+- If the user answers "Yes", we then want to ask them another question, if they answer "No", we want to display a message "Thanks for taking the time to help us out! Come back soon. :smile:"
 - The user found a problem with this guide, we then want to ask them which step was hard 1, 2, 3 (these are arbitray)
-- If the user answers 1 or 2, we want to show the user a message "We will take note of that and look to fix our guide", if the user answers 3 we want to ask another question
+- If the user answers 1 or 2, we want to same message we did when the user answers the first question as "No", if the user answers 3 we want to ask another question
 - The user has answered 3, we want ask another question, "What method of communication do you prefer?" with the possible answers "Phone" or "Email"
 - If the user answers phone to the previous question, we want to check what time of day it is, If it's after business hours then we want to let the user know we will call them tomorrow, otherwise we want to let the m know we will call them shortly. If the user answers email to the previous question, we will simply send them a message that suggests and email to get in touch is on it's way.
 
@@ -28,7 +28,7 @@ var bcQuestionnaire = {
 };
 ```
 
-# Step 3 - Add your first question
+## Step 3 - Add your first question
 
 Our questionnaire always starts with a question. For a quick reminder our first question is "Did you have any problem's creating the sample questionnaire?" with possible values of *true* and *false*. If the user answers yes, they will go to a new question, otherwise they will get a message.
 
@@ -57,4 +57,69 @@ If the user answers "Yes", we will go to step 2, and no to step 3. We will need 
 
 See what our data file looks like here.
 
-# Step 4 - Add 
+## Step 4 - Adding Next Steps
+
+Let's handle our option next Steps.
+
+### The User has NO problems with the guide
+
+In this step we simply want to thank the user for taking the questionnaire and end it. If we look options for question 1, we see that the next step has an id of 3. That id, doesn't exist, so lets create it!
+
+```javascript
+var bcQuestionnaire = {
+  Messages: [
+	  {
+		  id: 1,
+		  ...
+	  },
+	  {
+		  id: 3,
+		  text: "Thanks for taking the time to help us out! Come back soon. :smile:",
+	  }
+  ]
+};
+```
+
+### So the user had some issues with this guide
+
+Ok, we need to ask the user another question, this is still pretty straight forward, but let's go ahead and add another question.
+
+```javascript
+var bcQuestionnaire = {
+  Messages: [
+	{
+		id: 1,
+		...
+	},
+	{
+		id: 1,
+		text: "Did you have any problem's creating the sample questionnaire",
+		key: "hadProblemWithSample",
+		fieldType: "radio",
+		options: {
+			"step1": {
+				text: "Step 1",
+				nextStep: 3
+			},
+			"step2": {
+				text: "Step 2",
+				nextStep: 3
+			},
+			"step3": {
+				text: "Step 3",
+				nextStep: 4
+			}
+		}
+	},
+	{
+		id: 3,
+		...
+	}
+  ]
+};
+```
+
+Well now see in our options that both Step 1 and Step 2, will show are already created message. And Step 3 will result in use having to create another question.
+
+Note: I usually setup my id's in order of how questions and message will be shown, but as long at they are unique they should work.
+
