@@ -36,23 +36,25 @@ Our question will look like this:
 
 ```javascript
 {
-      id: 1,
-      text: "Did you have any problem's creating the sample questionnaire",
-      key: "hadProblemWithSample",
-      fieldType: "radio",
-      options: {
-        true: {
-          text: "Yes",
-          nextStep: 2
-        },
-        false: {
-          text: "No",
-          nextStep: 3
-        }
-      }
-    }
+	id: 1,
+	text: "Did you have any problem's creating the sample questionnaire",
+	key: "hadProblemWithSample",
+	fieldType: "radio",
+	options: {
+		true: {
+			text: "Yes",
+			nextStep: 2
+		},
+		false: {
+			text: "No",
+			nextStep: 3
+		}
+	}
+}
 ```
 
-If the user answers "Yes", we will go to step 2, but note there is no step  
+If the user answers "Yes", we will go to step 2, and no to step 3. We will need to create these before the app can work. We will do this below. 
 
 See what our data file looks like here.
+
+# Step 4 - Add 
