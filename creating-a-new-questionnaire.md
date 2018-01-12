@@ -191,3 +191,14 @@ var bcQuestionnaire = {
 We went ahead and added the required messages for the computed next steps.
 
 ### Step 5 - Run and Test Your Questionnaire
+
+The easiest way to run this app is create or use an exisiting web page.
+
+Add the following to it where you want the app to display: 
+
+```html
+<div id="root"></div><!-- questionnaire will be generated inside this div -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser-polyfill.min.js"></script> <!-- this polyfill lets our app work in more browsers -->
+<script src="/the/path/to/my/datafile.js"></script>
+<script src="/the/path/to/the/questionaire-component.js"></script>
+```
