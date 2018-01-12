@@ -92,7 +92,7 @@ var bcQuestionnaire = {
 		...
 	},
 	{
-		id: 1,
+		id: 2,
 		text: "Did you have any problem's creating the sample questionnaire",
 		key: "hadProblemWithSample",
 		fieldType: "radio",
@@ -123,3 +123,71 @@ Well now see in our options that both Step 1 and Step 2, will show are already c
 
 Note: I usually setup my id's in order of how questions and message will be shown, but as long at they are unique they should work.
 
+## Step 4 - Adding Question with Next Steps that aren't so straight forward
+
+In our next step, we want to determine the next step based on our answers and the time of day. We will need to pass property to our object to decide what the next step is based on our answers and some date javascript.
+
+```javascript
+var bcQuestionnaire = {
+  Messages: [
+	{
+		id: 1,
+		...
+	},
+	{
+		id: 2,
+		...
+	},
+	{
+		id: 3,
+		...
+	},
+	{
+		id: 4,
+		text: "What method of communication do you prefer?",
+		key: "preferredCommunicationMethod",
+		fieldType: "radio",
+		options: {
+			"phone": {
+				text: "Phone"
+			},
+			"email": {
+				text: "E-mail"
+			}
+		},
+		nextStep: function(answers) {
+			var currentHour = new Date().getHours();
+			var isAfterWorkHours = currentHour >= 17;
+			var isBeforeWorkHours = currentHour <= 9;
+			var isEmailPreferred = answers.preferredCommunicationMethod.toLowerCase() === 'email';
+
+			if (isEmailPreferred) {
+				return 5;
+			}
+
+			// Phone is the prefered method
+			if (isBeforeWorkHours || isAfterWorkHours) {
+				return 6;
+			}
+			return 7;
+		}
+	},
+	{
+		id: 5,
+		text: "Thanks for helping us out soon, you should receive an email from us shortly."
+	},
+	{
+		id: 6,
+		text: "Thanks for helping us out soon, we will give you a ring tomorrow during business hours"
+	},
+	{
+		id: 7,
+		text: "Thanks for helping us out soon, we will give you a ring shortly."
+	}
+  ]
+};
+```
+
+We went ahead and added the required messages for the computed next steps.
+
+### Step 5 - Run and Test Your Questionnaire
