@@ -6,11 +6,11 @@ var bcQuestionnaire = {
 			key: "hadProblemWithSample",
 			fieldType: "radio",
 			options: {
-				true: {
+				"true": {
 					text: "Yes",
 					nextStep: 2
 				},
-				false: {
+				"false": {
 					text: "No",
 					nextStep: 3
 				}
