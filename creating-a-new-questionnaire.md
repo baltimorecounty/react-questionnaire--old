@@ -2,7 +2,7 @@
 
 This guide will help you learn how to create a new questionnaire from scratch. 
 
-In this example, we will build a questionnaire that will evaluate this guide. (I know very meta ,right?)
+In this example, we will build a questionnaire that will evaluate this guide. (I know very meta, right?)
 
 Our requirements are
 
