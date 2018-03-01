@@ -6,12 +6,12 @@ In this example, we will build a questionnaire that will evaluate this guide. (I
 
 Our requirements are
 
-- Ask the user if they had any problems creating this sample questionnaire. Possible answers are "Yes" and "No"
-- If the user answers "Yes", we then want to ask them another question, if they answer "No", we want to display a message "Thanks for taking the time to help us out! Come back soon. :smile:"
-- The user found a problem with this guide, we then want to ask them which step was hard 1, 2, 3 (these are arbitray)
-- If the user answers 1 or 2, we want to same message we did when the user answers the first question as "No", if the user answers 3 we want to ask another question
-- The user has answered 3, we want ask another question, "What method of communication do you prefer?" with the possible answers "Phone" or "Email"
-- If the user answers phone to the previous question, we want to check what time of day it is, If it's after business hours then we want to let the user know we will call them tomorrow, otherwise we want to let the m know we will call them shortly. If the user answers email to the previous question, we will simply send them a message that suggests and email to get in touch is on it's way.
+1. Ask the user if they had any problems creating this sample questionnaire. Possible answers are "Yes" and "No"
+1. If the user answers "Yes", we then want to ask them another question, if they answer "No", we want to display a message "Thanks for taking the time to help us out! Come back soon. :smile:"
+1. The user found a problem with this guide, we then want to ask them which step was hard 1, 2, 3 (these are arbitray)
+1. If the user answers 1 or 2, we want to same message we did when the user answers the first question as "No", if the user answers 3 we want to ask another question
+1. The user has answered 3, we want ask another question, "What method of communication do you prefer?" with the possible answers "Phone" or "Email"
+1. If the user answers phone to the previous question, we want to check what time of day it is, If it's after business hours then we want to let the user know we will call them tomorrow, otherwise we want to let the m know we will call them shortly. If the user answers email to the previous question, we will simply send them a message that suggests and email to get in touch is on it's way.
 
 
 ## Step 1 - Create a new Data File
@@ -63,7 +63,7 @@ Let's handle our option next Steps.
 
 ### The User has NO problems with the guide
 
-In this step we simply want to thank the user for taking the questionnaire and end it. If we look options for question 1, we see that the next step has an id of 3. That id, doesn't exist, so lets create it!
+In this step we simply want to thank the user for taking the questionnaire and end it. If we look options for question 1, we see that the next step has an id of 3. That id doesn't exist, so lets create it!
 
 ```javascript
 var bcQuestionnaire = {
