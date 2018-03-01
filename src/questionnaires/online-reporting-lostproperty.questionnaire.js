@@ -1,10 +1,10 @@
 var Messages = [
     {
-        id: 1,
-        text: 'Does the lost property include a license plate or firearm?',
-        sender: 'question',
-        key: 'isPlateOrFireArm',
-        fieldType: 'radio',options: {
+		id: 1,
+		text: 'Does the lost property include a license plate or firearm?',
+		sender: 'question',
+		key: 'isPlateOrFireArm',
+		fieldType: 'radio',options: {
 			'true': {
 				text: 'Yes',
 				nextStep: 5
@@ -15,12 +15,12 @@ var Messages = [
 			}
 		}
 	},
-    {
-        id: 2,
-        text: 'Did the property have a serial number that you have available to provide?',
-        sender: 'question',key: 'hasSerialNumber',
-        fieldType: 'radio',
-        options: {
+	{
+		id: 2,
+		text: 'Did the property have a serial number that you have available to provide?',
+		sender: 'question',key: 'hasSerialNumber',
+		fieldType: 'radio',
+		options: {
 			'true': {
 				text: 'Yes',
 				nextStep: 5
@@ -32,11 +32,11 @@ var Messages = [
 		}
 	},
 	{
-        id: 3,
-        text: 'Does the lost property have a total value of $15,000 or greater?',
-        sender: 'question',key: 'valueGreaterThan15000',\
-        fieldType: 'radio',
-        options: {
+		id: 3,
+		text: 'Does the lost property have a total value of $15,000 or greater?',
+		sender: 'question',key: 'valueGreaterThan15000',\
+		fieldType: 'radio',
+		options: {
 			'true': {
 				text: 'Yes',
 				nextStep: 5
