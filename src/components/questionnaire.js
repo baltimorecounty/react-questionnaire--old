@@ -134,7 +134,18 @@ class QuestionnaireComponent extends Component {
 		this.setAnswer(activeQuestion.key, answerValue);
 
 		// Go to the next question, if it exists
-		this.getNextMessage(answerInfo.nextStep);
+		if (answerInfo.nextStep) {
+			this.getNextMessage(answerInfo.nextStep);
+		}
+		else {
+			if (activeQuestion.nextStep && typeof activeQuestion.nextStep === 'function') {
+				const nextStep = activeQuestion.nextStep(this.state.answers);
+				this.getNextMessage(nextStep);
+			}
+			else {
+				console.error('If next step is not specified in options, you must pass it as a function.')
+			}
+		}
 	};
 	
 	handleTextInputChange(questionKey, validationTypes, changeEvent) {
