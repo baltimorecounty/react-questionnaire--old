@@ -74,11 +74,15 @@ Setting up the app is pretty easy. (This assumes the questionaire css and javasc
 ```html
 <div id="root"></div><!-- questionnaire will be generated inside this div -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser-polyfill.min.js"></script> <!-- this polyfill lets our app work in more browsers -->
-<script src="/the/path/to/my/datafile.js"></script>
-<script src="/the/path/to/the/questionaire-component.js"></script>
+<script src="/the/path/to/my/datafile.js?version=1.0.0"></script>
+<script src="/the/path/to/the/questionaire-component.js?version=1.0.0"></script>
 ```
 
 This *html snippet* should be included just before the end body tag of your page.
+
+## Updating the Questionaire
+
+Sometimes you will just want to adjust the questions in the questionaire and although this doesn't require any app changes, it is always good to update the query strings for your data file on the page that contains the app. Remember the script reference will be on the page in an html snippet.
 
 ## Maintenance
 
