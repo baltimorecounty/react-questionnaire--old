@@ -27,8 +27,8 @@
     "regenerator-runtime": "^0.10.3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "cp -r src/questionnaires/. public/questionnaires/ && react-scripts start",
+    "build": "react-scripts build && cp -r src/questionnaires/. build/static/questionnaires/ && rm -r build/questionnaires",
     "test": "jest",
     "eject": "react-scripts eject"
   }

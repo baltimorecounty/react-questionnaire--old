@@ -7,11 +7,11 @@ var bcQuestionnaire = {
       key: "isResident",
       fieldType: "radio",
       options: {
-        true: {
+        "true": {
           text: "Yes",
           nextStep: 4
         },
-        false: {
+        "false": {
           text: "No",
           nextStep: 10
         }
@@ -45,11 +45,11 @@ var bcQuestionnaire = {
       key: "receivesPublicAssistance",
       fieldType: "radio",
       options: {
-        true: {
+        "true": {
           text: "Yes",
           nextStep: 11
         },
-        false: {
+        "false": {
           text: "No",
           nextStep: 8
         }
